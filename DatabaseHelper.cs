@@ -2,14 +2,14 @@
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
-namespace GuiForDentalA
+namespace SkProjectEdP
 {
     public static class DatabaseHelper
     {
-        private static readonly string connectionString = "server=localhost;database=dental_clinic;uid=root;pwd=rockglamouro5;";
-        private static MySqlConnection? connection; // Singleton connection instance
+        private static readonly string connectionString = "server=localhost;database=sk_bombon_barangay_management_system;uid=root;pwd=rockglamouro5;";
+        private static MySqlConnection? connection;
 
-        // Method to get or create a single MySqlConnection instance
+        // Get or create singleton connection
         public static MySqlConnection GetConnection()
         {
             if (connection == null)
@@ -25,7 +25,7 @@ namespace GuiForDentalA
             return connection;
         }
 
-        // Method to test the database connection
+        // Test DB connection
         public static void TestDatabaseConnection()
         {
             try
@@ -33,27 +33,26 @@ namespace GuiForDentalA
                 using (var cnn = new MySqlConnection(connectionString))
                 {
                     cnn.Open();
-                    MessageBox.Show("Connection Open!");
+                    MessageBox.Show("SK Bombon DB Connection Open!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Cannot open connection! Error: {ex.Message}");
+                MessageBox.Show($"Cannot open SK Bombon DB connection! Error: {ex.Message}");
             }
         }
 
-        // Method to execute a query and return a MySqlDataReader
+        // Execute SELECT or similar query
         public static MySqlDataReader ExecuteQuery(string query, params MySqlParameter[] parameters)
         {
             try
             {
-                var connection = new MySqlConnection(connectionString); // no singleton
+                var connection = new MySqlConnection(connectionString);
                 connection.Open();
 
                 var cmd = new MySqlCommand(query, connection);
                 cmd.Parameters.AddRange(parameters);
 
-                // CommandBehavior.CloseConnection closes the connection when reader is closed
                 return cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
             }
             catch (Exception ex)
@@ -62,8 +61,7 @@ namespace GuiForDentalA
             }
         }
 
-
-        // Method to execute a non-query command (e.g., INSERT, UPDATE, DELETE)
+        // Execute INSERT, UPDATE, DELETE
         public static int ExecuteNonQuery(string query, params MySqlParameter[] parameters)
         {
             try
@@ -80,7 +78,7 @@ namespace GuiForDentalA
             }
         }
 
-        // Method to close the connection
+        // Close the connection
         public static void CloseConnection()
         {
             if (connection != null && connection.State == System.Data.ConnectionState.Open)
